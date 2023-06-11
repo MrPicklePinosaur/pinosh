@@ -1014,6 +1014,8 @@ dependencies = [
  "env_logger",
  "log",
  "shrs",
+ "shrs_command_timer",
+ "shrs_mux",
 ]
 
 [[package]]
@@ -1163,8 +1165,7 @@ checksum = "2113ab51b87a539ae008b5c6c02dc020ffa39afd2d83cffcb3f4eb2722cebec2"
 [[package]]
 name = "shrs"
 version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "874a84a69f1884078d4e00e9dba5fc38472c8cea518f182d89c7d02b05f2630a"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
 dependencies = [
  "anyhow",
  "clap",
@@ -1183,10 +1184,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "shrs_core"
+name = "shrs_command_timer"
 version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cfb4acf175144fd558ffd9c6c41aa04215893fca1868db338667aa69defa361"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
+dependencies = [
+ "shrs",
+]
+
+[[package]]
+name = "shrs_core"
+version = "0.0.1-dev"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
 dependencies = [
  "anyhow",
  "anymap",
@@ -1195,20 +1203,21 @@ dependencies = [
  "derive_builder",
  "dirs",
  "lazy_static",
+ "log",
  "multimap",
  "nix 0.26.2",
  "pino_deref",
  "regex",
  "shrs_job",
+ "shrs_utils",
  "signal-hook",
  "thiserror",
 ]
 
 [[package]]
 name = "shrs_job"
-version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ae5ebf1415942982892a19ba81f96b45c8ba6f16fd49bfc955b1860ef9fd5c4"
+version = "0.0.1-dev"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
 dependencies = [
  "anyhow",
  "lazy_static",
@@ -1219,9 +1228,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_lang"
-version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eebc65e907029024933d34b52b6243cd4fb96674a7e588a89c56a61c0fac0974"
+version = "0.0.1-dev"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
 dependencies = [
  "anyhow",
  "lalrpop",
@@ -1237,9 +1245,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_line"
-version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "07ae81e915e603304428e1562caffdafd298615d829a1cc850169ef124978dc0"
+version = "0.0.1-dev"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
 dependencies = [
  "anyhow",
  "arboard",
@@ -1256,10 +1263,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "shrs_utils"
+name = "shrs_mux"
 version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30db82d985fc36a0f599b420c8d3e2dd081fce27fa4df076159c099aff757c01"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
+dependencies = [
+ "shrs",
+]
+
+[[package]]
+name = "shrs_utils"
+version = "0.0.1-dev"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
 dependencies = [
  "anyhow",
  "crossterm",
@@ -1270,9 +1284,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_vi"
-version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "288ac51ca9e7c0ab8a73e22777e2228205efdce4df118ac8fd1f6112717678fa"
+version = "0.0.1-dev"
+source = "git+https://github.com/MrPicklePinosaur/shrs#aea1ca4f4ff9fbc9966c2071a32351115e698927"
 dependencies = [
  "anyhow",
  "lalrpop",

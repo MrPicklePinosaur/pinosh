@@ -10,7 +10,9 @@ repository = "https://github.com/MrPicklePinosaur/pinosh"
 [features]
 
 [dependencies]
-shrs = { version = "0.0.1" }
+shrs = { git = "https://github.com/MrPicklePinosaur/shrs" }
+shrs_mux = { git = "https://github.com/MrPicklePinosaur/shrs" }
+shrs_command_timer = { git = "https://github.com/MrPicklePinosaur/shrs" }
 
 dirs = "5"
 anyhow = "1"

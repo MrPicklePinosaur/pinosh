@@ -10,8 +10,8 @@ use std::{
 
 use shrs::prelude::*;
 // use shrs_cd_tools::git;
-// use shrs_command_timer::{CommandTimerPlugin, CommandTimerState};
-// use shrs_mux::{MuxPlugin, MuxState};
+use shrs_command_timer::{CommandTimerPlugin, CommandTimerState};
+use shrs_mux::{MuxPlugin, MuxState};
 // use shrs_output_capture::OutputCapturePlugin;
 // use shrs_run_context::RunContextPlugin;
 
@@ -30,20 +30,18 @@ impl Prompt for MyPrompt {
         styled! {" ", @(blue)username(), " ", @(white,bold)top_pwd(), " ", indicator, " "}
     }
     fn prompt_right(&self, line_ctx: &mut LineCtx) -> StyledBuf {
-        let time_str = String::new();
-        // let time_str = line_ctx
-        //     .ctx
-        //     .state
-        //     .get::<CommandTimerState>()
-        //     .and_then(|x| x.command_time())
-        //     .map(|x| format!("{x:?}"));
+        let time_str = line_ctx
+            .ctx
+            .state
+            .get::<CommandTimerState>()
+            .and_then(|x| x.command_time())
+            .map(|x| format!("{x:?}"));
 
-        let lang = String::new();
-        // let lang = line_ctx
-        //     .ctx
-        //     .state
-        //     .get::<MuxState>()
-        //     .map(|state| state.get_lang());
+        let lang = line_ctx
+            .ctx
+            .state
+            .get::<MuxState>()
+            .map(|state| state.get_lang());
 
         let git_branch = String::new();
         // let git_branch = git::branch().map(|s| format!("git:{s}"));
@@ -88,7 +86,13 @@ fn main() {
     let highlighter = SyntaxHighlighter::new(SyntaxTheme::default());
 
     let keybinding = keybindings! {
-        "C-l" => Command::new("clear").spawn(),
+        |sh, ctx, rt|
+        "C-t" => {
+            // Spawn new terminal at current working dir
+            let path_str = rt.working_dir.as_os_str().to_str().unwrap();
+            let res = Command::new("alacritty").args(["--working-directory", path_str]).spawn();
+        },
+        "C-l" => { Command::new("clear").spawn() },
     };
 
     let prompt = MyPrompt;
@@ -111,6 +115,7 @@ fn main() {
         ("v", "vim"),
         ("V", "nvim"),
         ("la", "ls -a --color=auto"),
+        ("t", "task"),
     ]);
 
     let startup_msg: HookFn<StartupCtx> = |_sh: &Shell,
@@ -139,9 +144,9 @@ a rusty POSIX shell"#,
         .with_alias(alias)
         .with_readline(readline)
         // .with_plugin(OutputCapturePlugin)
-        // .with_plugin(CommandTimerPlugin)
+        .with_plugin(CommandTimerPlugin)
         // .with_plugin(RunContextPlugin)
-        // .with_plugin(MuxPlugin)
+        .with_plugin(MuxPlugin)
         .build()
         .expect("Could not construct shell");
 
