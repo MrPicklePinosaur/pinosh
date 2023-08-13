@@ -13,6 +13,7 @@ repository = "https://github.com/MrPicklePinosaur/pinosh"
 shrs = { git = "https://github.com/MrPicklePinosaur/shrs" }
 shrs_mux = { git = "https://github.com/MrPicklePinosaur/shrs" }
 shrs_command_timer = { git = "https://github.com/MrPicklePinosaur/shrs" }
+shrs_cd_tools = { git = "https://github.com/MrPicklePinosaur/shrs" }
 
 dirs = "5"
 anyhow = "1"

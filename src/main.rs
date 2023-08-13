@@ -9,9 +9,9 @@ use std::{
 };
 
 use shrs::prelude::*;
-// use shrs_cd_tools::git;
 use shrs_command_timer::{CommandTimerPlugin, CommandTimerState};
 use shrs_mux::{MuxPlugin, MuxState};
+use shrs_cd_tools::{node::NodeJs, rust::CargoToml, git::Git, DirParsePlugin, DirParseState, default_prompt};
 // use shrs_output_capture::OutputCapturePlugin;
 // use shrs_run_context::RunContextPlugin;
 
@@ -35,21 +35,28 @@ impl Prompt for MyPrompt {
             .state
             .get::<CommandTimerState>()
             .and_then(|x| x.command_time())
-            .map(|x| format!("{x:?}"));
+            .map(|x| format!("{x:?} "));
 
         let lang = line_ctx
             .ctx
             .state
             .get::<MuxState>()
-            .map(|state| state.get_lang());
+            .map(|state| format!("{} ", state.get_lang()));
 
-        let git_branch = String::new();
-        // let git_branch = git::branch().map(|s| format!("git:{s}"));
+        let git_branch = line_ctx
+            .ctx
+            .state
+            .get::<DirParseState>()
+            .and_then(|state| state.get_module_metadata::<Git>("git"))
+            .map(|git| format!("git:{} ", git.branch));
+
         if !line_ctx.lines.is_empty() {
             return styled! {""};
         }
 
-        styled! {@(bold,blue)git_branch, " ", time_str, " ", lang, " "}
+        let project_indicator = default_prompt(line_ctx);
+
+        styled! {@(bold,blue)git_branch, time_str, lang, project_indicator}
     }
 }
 
@@ -125,11 +132,15 @@ fn main() {
      -> anyhow::Result<()> {
         let welcome_str = format!(
             r#"
-        __         
-   ___ / /  _______
-  (_-</ _ \/ __(_-<
- /___/_//_/_/ /___/
-a rusty POSIX shell"#,
+         _                 _     
+   _ __ (_)_ __   ___  ___| |__  
+  | '_ \| | '_ \ / _ \/ __| '_ \ 
+  | |_) | | | | | (_) \__ \ | | |
+  | .__/|_|_| |_|\___/|___/_| |_|
+  |_| pinosaur's shell
+
+  ###############################
+"#,
         );
 
         println!("{welcome_str}");
@@ -146,6 +157,7 @@ a rusty POSIX shell"#,
         // .with_plugin(OutputCapturePlugin)
         .with_plugin(CommandTimerPlugin)
         // .with_plugin(RunContextPlugin)
+        .with_plugin(DirParsePlugin::new())
         .with_plugin(MuxPlugin)
         .build()
         .expect("Could not construct shell");
