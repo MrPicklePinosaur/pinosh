@@ -94,11 +94,6 @@ fn main() {
 
     let keybinding = keybindings! {
         |sh, ctx, rt|
-        "C-t" => {
-            // Spawn new terminal at current working dir
-            let path_str = rt.working_dir.as_os_str().to_str().unwrap();
-            let res = Command::new("alacritty").args(["--working-directory", path_str]).spawn();
-        },
         "C-l" => { Command::new("clear").spawn() },
     };
 
