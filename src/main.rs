@@ -153,7 +153,7 @@ fn main() {
         .with_plugin(CommandTimerPlugin)
         // .with_plugin(RunContextPlugin)
         .with_plugin(DirParsePlugin::new())
-        .with_plugin(MuxPlugin)
+        .with_plugin(MuxPlugin::new())
         .build()
         .expect("Could not construct shell");
 
