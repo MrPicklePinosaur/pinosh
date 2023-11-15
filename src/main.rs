@@ -4,6 +4,7 @@ extern crate shrs;
 
 use std::{
     fs,
+    env,
     io::{stdout, BufWriter},
     process::Command,
 };
@@ -95,6 +96,22 @@ fn main() {
     let keybinding = keybindings! {
         |sh, ctx, rt|
         "C-l" => { Command::new("clear").spawn() },
+        "C-f" => {
+            
+            let Ok(search_dirs) = env::var("FUZZY_DIRS") else {
+                eprintln!("FUZZY_DIRS env var not specified");
+                return;
+            };
+
+            let dir = Command::new("fdfind")
+                .args(&[".", "-t", "d", &search_dirs, "|", "fzf"])
+                .output()
+                .unwrap()
+                .stdout;
+            let dir = String::from_utf8(dir).unwrap();
+
+            sh.builtins.get("cd").unwrap().run(sh, ctx, rt, &vec![dir]).unwrap();
+        },
     };
 
     let prompt = MyPrompt;
