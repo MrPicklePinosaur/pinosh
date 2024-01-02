@@ -9,7 +9,7 @@ use std::{
     process::Command,
 };
 
-use shrs::prelude::*;
+use shrs::{prelude::{*, styled_buf::StyledBuf}, history::FileBackedHistory};
 use shrs_command_timer::{CommandTimerPlugin, CommandTimerState};
 use shrs_mux::{MuxPlugin, MuxState};
 use shrs_cd_tools::{node::NodeJs, rust::CargoToml, git::Git, DirParsePlugin, DirParseState, default_prompt};
@@ -69,7 +69,7 @@ fn main() {
     let config_dir = dirs::home_dir().unwrap().as_path().join(".config/pinosh");
     fs::create_dir_all(config_dir.clone());
 
-    let mut env = Env::new();
+    let mut env = Env::default();
     env.load();
     env.set("SHELL_NAME", "pinosh");
 
@@ -86,7 +86,7 @@ fn main() {
         Box::new(builtin_cmdname_action(&builtins)),
     ));
 
-    let menu = DefaultMenu::new();
+    let menu = DefaultMenu::default();
 
     let history_file = config_dir.as_path().join("history");
     let history = FileBackedHistory::new(history_file).expect("Could not open history file");
@@ -95,8 +95,8 @@ fn main() {
 
     let keybinding = keybindings! {
         |sh, ctx, rt|
-        "C-l" => { Command::new("clear").spawn() },
-        "C-f" => {
+        "C-l" => ("clear the screen", { Command::new("clear").spawn() }),
+        "C-f" => ("fuzzy search", {
             
             let Ok(search_dirs) = env::var("FUZZY_DIRS") else {
                 eprintln!("FUZZY_DIRS env var not specified");
@@ -111,7 +111,7 @@ fn main() {
             let dir = String::from_utf8(dir).unwrap();
 
             sh.builtins.get("cd").unwrap().run(sh, ctx, rt, &vec![dir]).unwrap();
-        },
+        }),
     };
 
     let prompt = MyPrompt;
@@ -119,9 +119,7 @@ fn main() {
     let readline = LineBuilder::default()
         .with_completer(completer)
         .with_menu(menu)
-        .with_history(history)
         .with_highlighter(highlighter)
-        .with_keybinding(keybinding)
         .with_prompt(prompt)
         .build()
         .expect("Could not construct readline");
@@ -159,13 +157,15 @@ fn main() {
         Ok(())
     };
     let mut hooks = Hooks::new();
-    hooks.register(startup_msg);
+    hooks.insert(startup_msg);
 
     let myshell = ShellBuilder::default()
         .with_hooks(hooks)
         .with_env(env)
         .with_alias(alias)
         .with_readline(readline)
+        .with_history(history)
+        .with_keybinding(keybinding)
         // .with_plugin(OutputCapturePlugin)
         .with_plugin(CommandTimerPlugin)
         // .with_plugin(RunContextPlugin)
