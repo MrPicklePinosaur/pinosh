@@ -13,6 +13,7 @@ use shrs::{prelude::{*, styled_buf::StyledBuf}, history::FileBackedHistory};
 use shrs_command_timer::{CommandTimerPlugin, CommandTimerState};
 use shrs_mux::{MuxPlugin, MuxState};
 use shrs_cd_tools::{node::NodeJs, rust::CargoToml, git::Git, DirParsePlugin, DirParseState, default_prompt};
+use shrs_openai::OpenaiPlugin;
 // use shrs_output_capture::OutputCapturePlugin;
 // use shrs_run_context::RunContextPlugin;
 
@@ -159,6 +160,8 @@ fn main() {
     let mut hooks = Hooks::new();
     hooks.insert(startup_msg);
 
+    let openai_api_key = std::env::var("OPENAI_KEY").unwrap().to_string();
+
     let myshell = ShellBuilder::default()
         .with_hooks(hooks)
         .with_env(env)
@@ -171,6 +174,7 @@ fn main() {
         // .with_plugin(RunContextPlugin)
         .with_plugin(DirParsePlugin::new())
         .with_plugin(MuxPlugin::new())
+        .with_plugin(OpenaiPlugin::new(openai_api_key))
         .build()
         .expect("Could not construct shell");
 
