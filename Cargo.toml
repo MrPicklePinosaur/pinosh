@@ -18,6 +18,7 @@ shrs_openai = { git = "https://github.com/MrPicklePinosaur/shrs_openai" }
 
 dirs = "5"
 anyhow = "1"
+cmd_lib = "1.9"
 
 log = "0.4"
 env_logger = "0.10"

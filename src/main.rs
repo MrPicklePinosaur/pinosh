@@ -17,6 +17,8 @@ use shrs_openai::OpenaiPlugin;
 // use shrs_output_capture::OutputCapturePlugin;
 // use shrs_run_context::RunContextPlugin;
 
+use cmd_lib::*;
+
 struct MyPrompt;
 
 impl Prompt for MyPrompt {
@@ -104,14 +106,10 @@ fn main() {
                 return;
             };
 
-            let dir = Command::new("fdfind")
-                .args(&[".", "-t", "d", &search_dirs, "|", "fzf"])
-                .output()
-                .unwrap()
-                .stdout;
-            let dir = String::from_utf8(dir).unwrap();
+            // TODO not getting any output on console?
+            run_cmd! (fdfind . -t d | fzf).unwrap();
 
-            sh.builtins.get("cd").unwrap().run(sh, ctx, rt, &vec![dir]).unwrap();
+            // sh.builtins.get("cd").unwrap().run(sh, ctx, rt, &vec![dir]).unwrap();
         }),
     };
 
