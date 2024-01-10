@@ -67,9 +67,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.78"
+version = "1.0.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca87830a3e3fb156dc96cfbd31cb620265dd053be734723f22b760d6cc3c3051"
+checksum = "080e9890a082662b09c1ad45f567faeeb47f22b5fb23895fbe1e651e718e25ca"
 
 [[package]]
 name = "anymap"
@@ -179,9 +179,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "clap"
-version = "4.4.12"
+version = "4.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcfab8ba68f3668e89f6ff60f5b205cea56aa7b769451a59f34b8682f51c056d"
+checksum = "33e92c5c1a78c62968ec57dbc2440366a2d6e5a23faf829970ff1585dc6b18e2"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -189,9 +189,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.4.12"
+version = "4.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb7fb5e4e979aec3be7791562fcba452f94ad85e954da024396433e0e25a79e9"
+checksum = "f4323769dc8a61e2c39ad7dc26f6f2800524691a44d74fe3d1071a5c24db6370"
 dependencies = [
  "anstream",
  "anstyle",
@@ -208,7 +208,7 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.45",
+ "syn 2.0.48",
 ]
 
 [[package]]
@@ -291,34 +291,28 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-deque"
-version = "0.8.4"
+version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fca89a0e215bab21874660c67903c5f143333cab1da83d041c7ded6053774751"
+checksum = "613f8cc01fe9cf1a3eb3d7f488fd2fa8388403e97039e2f73692932e291a770d"
 dependencies = [
- "cfg-if",
  "crossbeam-epoch",
  "crossbeam-utils",
 ]
 
 [[package]]
 name = "crossbeam-epoch"
-version = "0.9.17"
+version = "0.9.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e3681d554572a651dda4186cd47240627c3d0114d45a95f6ad27f2f22e7548d"
+checksum = "5b82ac4a3c2ca9c3460964f020e1402edd5753411d7737aa39c3714ad1b5420e"
 dependencies = [
- "autocfg",
- "cfg-if",
  "crossbeam-utils",
 ]
 
 [[package]]
 name = "crossbeam-utils"
-version = "0.8.18"
+version = "0.8.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3a430a770ebd84726f584a90ee7f020d28db52c6d02138900f22341f866d39c"
-dependencies = [
- "cfg-if",
-]
+checksum = "248e3bacc7dc6baa3b21e405ee045c3047101a49145e7e9eca583ab4c2ca5345"
 
 [[package]]
 name = "crossterm"
@@ -520,6 +514,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "fastrand"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25cbce373ec4653f1a01a31e8a5e5ec0c622dc27ff9c4e6606eefef5cbbed4a5"
+
+[[package]]
 name = "fdeflate"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -586,9 +586,9 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.2.11"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe9006bed769170c11f845cf00c7c1e9092aeb3f268e007c3e760ac68008070f"
+checksum = "190092ea657667030ac6a35e305e62fc4dd69fd98ac98631e5d3a2b1575a12b5"
 dependencies = [
  "cfg-if",
  "libc",
@@ -721,9 +721,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.151"
+version = "0.2.152"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "302d7ab3130588088d277783b1e2d2e10c9e9e4a16dd9050e6ec93fb3e7048f4"
+checksum = "13e3bf6590cbc649f4d1a3eefc9d5d6eb746f5200ffb04e5e142700b8faa56e7"
 
 [[package]]
 name = "libredox"
@@ -1025,18 +1025,18 @@ checksum = "925383efa346730478fb4838dbe9137d2a47675ad789c546d150a6e1dd4ab31c"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.73"
+version = "1.0.76"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2dd5e8a1f1029c43224ad5898e50140c2aebb1705f19e67c918ebf5b9e797fe1"
+checksum = "95fc56cda0b5c3325f5fbbd7ff9fda9e02bb00bb3dac51252d2f1bfa1cb8cc8c"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "quote"
-version = "1.0.34"
+version = "1.0.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22a37c9326af5ed140c86a46655b5278de879853be5573c01df185b6f49a580a"
+checksum = "291ec9ab5efd934aaf503a6466c5d5251535d108ee747472c3977cc5acc868ef"
 dependencies = [
  "proc-macro2",
 ]
@@ -1205,29 +1205,29 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.193"
+version = "1.0.195"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25dd9975e68d0cb5aa1120c288333fc98731bd1dd12f561e468ea4728c042b89"
+checksum = "63261df402c67811e9ac6def069e4786148c4563f4b50fd4bf30aa370d626b02"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.193"
+version = "1.0.195"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43576ca501357b9b071ac53cdc7da8ef0cbd9493d8df094cd821777ea6e894d3"
+checksum = "46fe8f8603d81ba86327b23a2e9cdf49e1255fb94a4c5f297f6ee0547178ea2c"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.45",
+ "syn 2.0.48",
 ]
 
 [[package]]
 name = "serde_json"
-version = "1.0.109"
+version = "1.0.111"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb0652c533506ad7a2e353cce269330d6afd8bdfb6d75e0ace5b35aacbd7b9e9"
+checksum = "176e46fa42316f18edd598015a5166857fc835ec732f5215eac6b7bdbf0a84f4"
 dependencies = [
  "itoa",
  "ryu",
@@ -1245,8 +1245,8 @@ dependencies = [
 
 [[package]]
 name = "shrs"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anyhow",
  "anymap 1.0.0-beta.2",
@@ -1270,8 +1270,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_cd_tools"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anymap 0.12.1",
  "derive_builder",
@@ -1285,16 +1285,16 @@ dependencies = [
 
 [[package]]
 name = "shrs_command_timer"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "shrs",
 ]
 
 [[package]]
 name = "shrs_core"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anyhow",
  "anymap 1.0.0-beta.2",
@@ -1317,8 +1317,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_job"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anyhow",
  "lazy_static",
@@ -1329,8 +1329,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_lang"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anyhow",
  "lalrpop",
@@ -1346,8 +1346,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_line"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anyhow",
  "arboard",
@@ -1358,6 +1358,7 @@ dependencies = [
  "shrs_lang",
  "shrs_utils",
  "shrs_vi",
+ "tempfile",
  "thiserror",
  "trie-rs",
  "unicode-width",
@@ -1365,8 +1366,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_mux"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "clap",
  "shrs",
@@ -1385,8 +1386,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_utils"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anyhow",
  "crossterm",
@@ -1398,8 +1399,8 @@ dependencies = [
 
 [[package]]
 name = "shrs_vi"
-version = "0.0.2"
-source = "git+https://github.com/MrPicklePinosaur/shrs#1012e0f7b9368ed0e54166566b1e3f5df04104e1"
+version = "0.0.3"
+source = "git+https://github.com/MrPicklePinosaur/shrs#0d3b3b127b90a24bcadeeb2117c638308f8d388f"
 dependencies = [
  "anyhow",
  "lalrpop",
@@ -1506,13 +1507,26 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.45"
+version = "2.0.48"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0eae3c679c56dc214320b67a1bc04ef3dfbd6411f6443974b5e4893231298e66"
+checksum = "0f3531638e407dfc0814761abb7c00a5b54992b849452a0646b7f65c9f770f3f"
 dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "tempfile"
+version = "3.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "01ce4141aa927a6d1bd34a041795abd0db1cccba5d5f24b009f694bdf3a1f3fa"
+dependencies = [
+ "cfg-if",
+ "fastrand",
+ "redox_syscall",
+ "rustix",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1537,22 +1551,22 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.53"
+version = "1.0.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2cd5904763bad08ad5513ddbb12cf2ae273ca53fa9f68e843e236ec6dfccc09"
+checksum = "d54378c645627613241d077a3a79db965db602882668f9136ac42af9ecb730ad"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.53"
+version = "1.0.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3dcf4a824cce0aeacd6f38ae6f24234c8e80d68632338ebaa1443b5df9e29e19"
+checksum = "fa0faa943b50f3db30a20aa7e265dbc66076993efed8463e8de414e5d06d3471"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.45",
+ "syn 2.0.48",
 ]
 
 [[package]]
@@ -1840,9 +1854,9 @@ checksum = "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04"
 
 [[package]]
 name = "winnow"
-version = "0.5.31"
+version = "0.5.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97a4882e6b134d6c28953a387571f1acdd3496830d5e36c5e3a1075580ea641c"
+checksum = "b7520bbdec7211caa7c4e682eb1fbe07abe20cee6756b6e00f537c82c11816aa"
 dependencies = [
  "memchr",
 ]

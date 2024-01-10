@@ -20,7 +20,7 @@ use shrs_openai::OpenaiPlugin;
 struct MyPrompt;
 
 impl Prompt for MyPrompt {
-    fn prompt_left(&self, line_ctx: &mut LineCtx) -> StyledBuf {
+    fn prompt_left(&self, line_ctx: &LineCtx) -> StyledBuf {
         let indicator = match line_ctx.mode() {
             LineMode::Insert => String::from(">").cyan(),
             LineMode::Normal => String::from(":").yellow(),
@@ -29,9 +29,9 @@ impl Prompt for MyPrompt {
             return styled! {" ", indicator, " "};
         }
 
-        styled! {" ", @(blue)username(), " ", @(white,bold)top_pwd(), " ", indicator, " "}
+        styled! {" ", username().map(|u|u.with(Color::Blue)), " ", top_pwd().with(Color::White).attribute(Attribute::Bold), " ", indicator, " "}
     }
-    fn prompt_right(&self, line_ctx: &mut LineCtx) -> StyledBuf {
+    fn prompt_right(&self, line_ctx: &LineCtx) -> StyledBuf {
         let time_str = line_ctx
             .ctx
             .state
@@ -58,7 +58,7 @@ impl Prompt for MyPrompt {
 
         let project_indicator = default_prompt(line_ctx);
 
-        styled! {@(bold,blue)git_branch, time_str, lang, project_indicator}
+        styled! {git_branch.map(|u|u.with(Color::Blue)), time_str, lang, project_indicator}
     }
 }
 
@@ -92,7 +92,7 @@ fn main() {
     let history_file = config_dir.as_path().join("history");
     let history = FileBackedHistory::new(history_file).expect("Could not open history file");
 
-    let highlighter = SyntaxHighlighter::new(SyntaxTheme::default());
+    // let highlighter = SyntaxHighlighter::new(SyntaxTheme::default());
 
     let keybinding = keybindings! {
         |sh, ctx, rt|
@@ -120,7 +120,7 @@ fn main() {
     let readline = LineBuilder::default()
         .with_completer(completer)
         .with_menu(menu)
-        .with_highlighter(highlighter)
+        // .with_highlighter(highlighter)
         .with_prompt(prompt)
         .build()
         .expect("Could not construct readline");
