@@ -28,10 +28,10 @@ impl Prompt for MyPrompt {
             LineMode::Normal => String::from(":").yellow(),
         };
         if !line_ctx.lines.is_empty() {
-            return styled! {" ", indicator, " "};
+            return styled_buf! {" ", indicator, " "};
         }
 
-        styled! {" ", username().map(|u|u.with(Color::Blue)), " ", top_pwd().with(Color::White).attribute(Attribute::Bold), " ", indicator, " "}
+        styled_buf! {" ", username().map(|u|u.with(Color::Blue)), " ", top_pwd().with(Color::White).attribute(Attribute::Bold), " ", indicator, " "}
     }
     fn prompt_right(&self, line_ctx: &LineCtx) -> StyledBuf {
         let time_str = line_ctx
@@ -45,7 +45,7 @@ impl Prompt for MyPrompt {
             .ctx
             .state
             .get::<MuxState>()
-            .map(|state| format!("{} ", state.get_lang()));
+            .map(|state| format!("{} ", state.current_lang().0));
 
         let git_branch = line_ctx
             .ctx
@@ -55,12 +55,12 @@ impl Prompt for MyPrompt {
             .map(|git| format!("git:{} ", git.branch));
 
         if !line_ctx.lines.is_empty() {
-            return styled! {""};
+            return styled_buf! {""};
         }
 
         let project_indicator = default_prompt(line_ctx);
 
-        styled! {git_branch.map(|u|u.with(Color::Blue)), time_str, lang, project_indicator}
+        styled_buf! {git_branch.map(|u|u.with(Color::Blue)), time_str, lang, project_indicator}
     }
 }
 
@@ -116,7 +116,6 @@ fn main() {
     let prompt = MyPrompt;
 
     let readline = LineBuilder::default()
-        .with_completer(completer)
         .with_menu(menu)
         // .with_highlighter(highlighter)
         .with_prompt(prompt)
@@ -158,23 +157,33 @@ fn main() {
     let mut hooks = Hooks::new();
     hooks.insert(startup_msg);
 
-    let openai_api_key = std::env::var("OPENAI_KEY").unwrap().to_string();
+    let openai_api_key = std::env::var("OPENAI_KEY");
 
-    let myshell = ShellBuilder::default()
+    let mut myshell = ShellBuilder::default()
+        .with_completer(completer)
         .with_hooks(hooks)
         .with_env(env)
         .with_alias(alias)
         .with_readline(readline)
         .with_history(history)
-        .with_keybinding(keybinding)
+        .with_keybinding(keybinding);
+
+    if let Ok(openai_api_key) = openai_api_key {
+        myshell = myshell.with_plugin(OpenaiPlugin::new(openai_api_key));
+    } else {
+        println!("Missing OPENAI_KEY, skipping open_ai package");
+    }
+
+    myshell = myshell
         // .with_plugin(OutputCapturePlugin)
         .with_plugin(CommandTimerPlugin)
         // .with_plugin(RunContextPlugin)
         .with_plugin(DirParsePlugin::new())
-        .with_plugin(MuxPlugin::new())
-        .with_plugin(OpenaiPlugin::new(openai_api_key))
-        .build()
-        .expect("Could not construct shell");
+        .with_plugin(MuxPlugin::new());
 
-    myshell.run();
+    myshell
+        .build()
+        .expect("Could not construct shell")
+        .run()
+        .unwrap();
 }
