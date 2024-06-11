@@ -1661,6 +1661,7 @@ dependencies = [
  "shrs_file_history",
  "shrs_mux",
  "shrs_openai",
+ "shrs_z",
 ]
 
 [[package]]
@@ -2258,6 +2259,17 @@ dependencies = [
  "lalrpop-util 0.19.12",
  "regex",
  "thiserror",
+]
+
+[[package]]
+name = "shrs_z"
+version = "0.0.6"
+source = "git+https://github.com/MrPicklePinosaur/shrs_z#09380939bdd8ecbaeb3a16499772109bc7b630c7"
+dependencies = [
+ "chrono",
+ "clap 4.5.7",
+ "regex",
+ "shrs",
 ]
 
 [[package]]

@@ -13,11 +13,10 @@ use cmd_lib::run_cmd;
 use shrs::prelude::*;
 use shrs_file_history::FileBackedHistoryPlugin;
 use shrs_command_timer::{CommandTimerPlugin, CommandTimerState};
-use shrs_mux::{MuxPlugin, MuxState};
-use shrs_cd_tools::{node::NodeJs, rust::CargoToml, git::Git, DirParsePlugin, DirParseState, default_prompt};
+use shrs_mux::{python::{PythonLang, PythonTheme}, BashLang, MuxPlugin, MuxState, NuLang};
+use shrs_cd_tools::{git::Git, DirParsePlugin, DirParseState, default_prompt};
 use shrs_openai::OpenaiPlugin;
-// use shrs_output_capture::OutputCapturePlugin;
-// use shrs_run_context::RunContextPlugin;
+use shrs_z::ZPlugin;
 
 fn prompt_left(line_mode: State<LineMode>) -> StyledBuf {
     let indicator = match *line_mode {
@@ -29,8 +28,8 @@ fn prompt_left(line_mode: State<LineMode>) -> StyledBuf {
 }
 
 fn prompt_right(cmd_timer: State<CommandTimerState>, mux: State<MuxState>, dir_parse: State<DirParseState>, shell: &Shell) -> StyledBuf {
-    let time_str = cmd_timer.command_time().map(|x| format!("{x:?}"));
-    let lang_name = mux.current_lang().name();
+    let time_str = cmd_timer.command_time().map(|x| format!("{x:?} "));
+    let lang_name = format!("{} ", mux.current_lang().name());
 
     let git_branch = dir_parse.get_module_metadata::<Git>("git")
         .map(|git| format!("git:{} ", git.branch));
@@ -41,7 +40,7 @@ fn prompt_right(cmd_timer: State<CommandTimerState>, mux: State<MuxState>, dir_p
 }
 
 fn main() {
-    env_logger::init();
+    // env_logger::init();
 
     let _out = BufWriter::new(stdout());
 
@@ -50,7 +49,7 @@ fn main() {
 
     let mut env = Env::default();
     env.load();
-    env.set("SHELL_NAME", "pinosh");
+    env.set("SHELL", "pinosh");
 
     let builtins = Builtins::default();
 
@@ -107,20 +106,9 @@ fn main() {
 
     let startup_msg =
         |mut out: StateMut<OutputWriter>, _startup: &StartupCtx| -> anyhow::Result<()> {
-        let welcome_str = format!(
-            r#"
-         _                 _     
-   _ __ (_)_ __   ___  ___| |__  
-  | '_ \| | '_ \ / _ \/ __| '_ \ 
-  | |_) | | | | | (_) \__ \ | | |
-  | .__/|_|_| |_|\___/|___/_| |_|
-  |_| pinosaur's shell
 
-  ###############################
-"#,
-        );
+        run_cmd! (maxfetch).unwrap();
 
-        println!("{welcome_str}");
         Ok(())
     };
     let mut hooks = Hooks::new();
@@ -143,13 +131,19 @@ fn main() {
         println!("Missing OPENAI_KEY, skipping open_ai package");
     }
 
+    let mux_plugin = MuxPlugin::new()
+        .register_lang("bash", BashLang::new())
+        .register_lang("python", PythonLang::new())
+        .register_theme("python", Box::new(PythonTheme::new()))
+        .register_lang("nu", NuLang::new());
+
+
     myshell = myshell
-        // .with_plugin(OutputCapturePlugin)
         .with_plugin(CommandTimerPlugin)
         .with_plugin(FileBackedHistoryPlugin::new())
-        // .with_plugin(RunContextPlugin)
         .with_plugin(DirParsePlugin::new())
-        .with_plugin(MuxPlugin::new());
+        .with_plugin(ZPlugin::new())
+        .with_plugin(mux_plugin);
 
     myshell
         .build()

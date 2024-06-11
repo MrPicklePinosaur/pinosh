@@ -16,6 +16,7 @@ shrs_command_timer = { version = "0.0.6" }
 shrs_file_history = { version = "0.0.6" }
 shrs_cd_tools = { version = "0.0.6" }
 shrs_openai = { git = "https://github.com/MrPicklePinosaur/shrs_openai" }
+shrs_z = { git = "https://github.com/MrPicklePinosaur/shrs_z" }
 
 dirs = "5"
 anyhow = "1"
