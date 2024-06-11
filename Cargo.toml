@@ -10,10 +10,11 @@ repository = "https://github.com/MrPicklePinosaur/pinosh"
 [features]
 
 [dependencies]
-shrs = { git = "https://github.com/MrPicklePinosaur/shrs" }
-shrs_mux = { git = "https://github.com/MrPicklePinosaur/shrs" }
-shrs_command_timer = { git = "https://github.com/MrPicklePinosaur/shrs" }
-shrs_cd_tools = { git = "https://github.com/MrPicklePinosaur/shrs" }
+shrs = { version = "0.0.6" }
+shrs_mux = { version = "0.0.6" }
+shrs_command_timer = { version = "0.0.6" }
+shrs_file_history = { version = "0.0.6" }
+shrs_cd_tools = { version = "0.0.6" }
 shrs_openai = { git = "https://github.com/MrPicklePinosaur/shrs_openai" }
 
 dirs = "5"

@@ -9,7 +9,9 @@ use std::{
     process::Command,
 };
 
-use shrs::{prelude::{*, styled_buf::StyledBuf}, history::FileBackedHistory};
+use cmd_lib::run_cmd;
+use shrs::prelude::*;
+use shrs_file_history::FileBackedHistoryPlugin;
 use shrs_command_timer::{CommandTimerPlugin, CommandTimerState};
 use shrs_mux::{MuxPlugin, MuxState};
 use shrs_cd_tools::{node::NodeJs, rust::CargoToml, git::Git, DirParsePlugin, DirParseState, default_prompt};
@@ -17,51 +19,25 @@ use shrs_openai::OpenaiPlugin;
 // use shrs_output_capture::OutputCapturePlugin;
 // use shrs_run_context::RunContextPlugin;
 
-use cmd_lib::*;
+fn prompt_left(line_mode: State<LineMode>) -> StyledBuf {
+    let indicator = match *line_mode {
+        LineMode::Insert => String::from(">").cyan(),
+        LineMode::Normal => String::from(":").yellow(),
+    };
 
-struct MyPrompt;
+    styled_buf! {" ", username().map(|u|u.with(Color::Blue)), " ", top_pwd().with(Color::White).attribute(Attribute::Bold), " ", indicator, " "}
+}
 
-impl Prompt for MyPrompt {
-    fn prompt_left(&self, line_ctx: &LineCtx) -> StyledBuf {
-        let indicator = match line_ctx.mode() {
-            LineMode::Insert => String::from(">").cyan(),
-            LineMode::Normal => String::from(":").yellow(),
-        };
-        if !line_ctx.lines.is_empty() {
-            return styled_buf! {" ", indicator, " "};
-        }
+fn prompt_right(cmd_timer: State<CommandTimerState>, mux: State<MuxState>, dir_parse: State<DirParseState>, shell: &Shell) -> StyledBuf {
+    let time_str = cmd_timer.command_time().map(|x| format!("{x:?}"));
+    let lang_name = mux.current_lang().name();
 
-        styled_buf! {" ", username().map(|u|u.with(Color::Blue)), " ", top_pwd().with(Color::White).attribute(Attribute::Bold), " ", indicator, " "}
-    }
-    fn prompt_right(&self, line_ctx: &LineCtx) -> StyledBuf {
-        let time_str = line_ctx
-            .ctx
-            .state
-            .get::<CommandTimerState>()
-            .and_then(|x| x.command_time())
-            .map(|x| format!("{x:?} "));
+    let git_branch = dir_parse.get_module_metadata::<Git>("git")
+        .map(|git| format!("git:{} ", git.branch));
 
-        let lang = line_ctx
-            .ctx
-            .state
-            .get::<MuxState>()
-            .map(|state| format!("{} ", state.current_lang().0));
+    let project_indicator = default_prompt(&dir_parse, shell);
 
-        let git_branch = line_ctx
-            .ctx
-            .state
-            .get::<DirParseState>()
-            .and_then(|state| state.get_module_metadata::<Git>("git"))
-            .map(|git| format!("git:{} ", git.branch));
-
-        if !line_ctx.lines.is_empty() {
-            return styled_buf! {""};
-        }
-
-        let project_indicator = default_prompt(line_ctx);
-
-        styled_buf! {git_branch.map(|u|u.with(Color::Blue)), time_str, lang, project_indicator}
-    }
+    styled_buf! {git_branch.map(|u|u.with(Color::Blue)), time_str, lang_name, project_indicator}
 }
 
 fn main() {
@@ -91,36 +67,32 @@ fn main() {
 
     let menu = DefaultMenu::default();
 
-    let history_file = config_dir.as_path().join("history");
-    let history = FileBackedHistory::new(history_file).expect("Could not open history file");
-
     // let highlighter = SyntaxHighlighter::new(SyntaxTheme::default());
 
-    let keybinding = keybindings! {
-        |sh, ctx, rt|
-        "C-l" => ("clear the screen", { Command::new("clear").spawn() }),
-        "C-f" => ("fuzzy search", {
+    let mut bindings = Keybindings::new();
+    bindings
+    .insert("C-l", "Clear the screen", || -> anyhow::Result<()> {
+        Command::new("clear")
+            .spawn()
+            .expect("Couldn't clear screen");
+        Ok(())
+    })
+    .unwrap();
+    bindings
+    .insert("C-f", "Fuzzy search", || -> anyhow::Result<()> {
             
-            let Ok(search_dirs) = env::var("FUZZY_DIRS") else {
-                eprintln!("FUZZY_DIRS env var not specified");
-                return;
-            };
+        let Ok(search_dirs) = env::var("FUZZY_DIRS") else {
+            eprintln!("FUZZY_DIRS env var not specified");
+            return Ok(());
+        };
 
-            // TODO not getting any output on console?
-            run_cmd! (fdfind . -t d | fzf).unwrap();
+        // TODO not getting any output on console?
+        run_cmd! (fdfind . -t d | fzf).unwrap();
 
-            // sh.builtins.get("cd").unwrap().run(sh, ctx, rt, &vec![dir]).unwrap();
-        }),
-    };
-
-    let prompt = MyPrompt;
-
-    let readline = LineBuilder::default()
-        .with_menu(menu)
-        // .with_highlighter(highlighter)
-        .with_prompt(prompt)
-        .build()
-        .expect("Could not construct readline");
+        // sh.builtins.get("cd").unwrap().run(sh, ctx, rt, &vec![dir]).unwrap();
+        Ok(())
+    })
+    .unwrap();
 
     let alias = Alias::from_iter([
         ("ls", "ls --color=auto"),
@@ -133,11 +105,8 @@ fn main() {
         ("t", "task"),
     ]);
 
-    let startup_msg: HookFn<StartupCtx> = |_sh: &Shell,
-                                           _sh_ctx: &mut Context,
-                                           _sh_rt: &mut Runtime,
-                                           _ctx: &StartupCtx|
-     -> anyhow::Result<()> {
+    let startup_msg =
+        |mut out: StateMut<OutputWriter>, _startup: &StartupCtx| -> anyhow::Result<()> {
         let welcome_str = format!(
             r#"
          _                 _     
@@ -160,13 +129,13 @@ fn main() {
     let openai_api_key = std::env::var("OPENAI_KEY");
 
     let mut myshell = ShellBuilder::default()
+        .with_menu(menu)
+        .with_prompt(Prompt::from_sides(prompt_left, prompt_right))
         .with_completer(completer)
         .with_hooks(hooks)
         .with_env(env)
         .with_alias(alias)
-        .with_readline(readline)
-        .with_history(history)
-        .with_keybinding(keybinding);
+        .with_keybindings(bindings);
 
     if let Ok(openai_api_key) = openai_api_key {
         myshell = myshell.with_plugin(OpenaiPlugin::new(openai_api_key));
@@ -177,6 +146,7 @@ fn main() {
     myshell = myshell
         // .with_plugin(OutputCapturePlugin)
         .with_plugin(CommandTimerPlugin)
+        .with_plugin(FileBackedHistoryPlugin::new())
         // .with_plugin(RunContextPlugin)
         .with_plugin(DirParsePlugin::new())
         .with_plugin(MuxPlugin::new());
